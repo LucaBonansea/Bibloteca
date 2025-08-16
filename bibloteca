@@ -1,0 +1,57 @@
+-- Primero las tablas dependientes
+DROP TABLE IF EXISTS LibroAutor;
+DROP TABLE IF EXISTS Prestamo;
+DROP TABLE IF EXISTS Ejemplar;
+
+-- Luego las tablas independientes
+DROP TABLE IF EXISTS Persona;
+DROP TABLE IF EXISTS Libro;
+DROP TABLE IF EXISTS Autor;
+
+-- Creacion de las tablas
+CREATE TABLE Autor(
+    codigo SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    nacionalidad VARCHAR(50),
+    fecha_nac VARCHAR(10)
+);
+
+CREATE TABLE Libro (
+    isbn VARCHAR(20) PRIMARY KEY,
+    titulo VARCHAR(200) NOT NULL,
+    genero VARCHAR(50) CHECK (genero IN ('FICCION', 'ROMANCE', 'TERROR', 'NOVELA', 'DRAMA', 'MISTERIO')),
+    editorial VARCHAR(100),
+    fecha_pub VARCHAR(10)
+);
+
+CREATE TABLE Ejemplar (
+    idEjemplar SERIAL PRIMARY KEY,
+    isbn VARCHAR(20) REFERENCES Libro(isbn),
+    estado VARCHAR(20) CHECK (estado IN ('PRESTADO', 'EN_BIBLIOTECA', 'RETRASADO'))
+);
+
+CREATE TABLE Persona (
+    ci VARCHAR(20) PRIMARY KEY,
+    habilitado BOOLEAN DEFAULT TRUE
+);
+
+
+CREATE TABLE Prestamo (
+    id SERIAL PRIMARY KEY,
+    ci VARCHAR(20) REFERENCES Persona(ci),
+    idEjemplar INT REFERENCES Ejemplar(idEjemplar),
+    fecha_entrega VARCHAR(10),
+    fecha_emision VARCHAR(10),
+    multa BOOLEAN DEFAULT FALSE
+);
+
+
+CREATE TABLE LibroAutor (
+    isbn VARCHAR(20) REFERENCES Libro(isbn),
+    codigo INT REFERENCES Autor(codigo),
+    PRIMARY KEY (isbn, codigo)
+);
+
+-- OUTPUT 
+SELECT * FROM AUTOR;
+
